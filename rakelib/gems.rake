@@ -15,7 +15,7 @@ namespace "gem" do
     begin
       gem name, requirement
     rescue Gem::LoadError => e
-      puts "Failed to load #{name} #{requirement}: #{e}"
+      puts "Installing #{name} #{requirement} because the build process needs it."
       Rake::Task["gem:install"].invoke(name, requirement, target)
     end
     task.reenable # Allow this task to be run again
