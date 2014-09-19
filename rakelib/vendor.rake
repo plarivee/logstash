@@ -97,14 +97,23 @@ namespace "vendor" do
       mkdir parent
     end.invoke unless Rake::Task.task_defined?(parent)
 
+    vendor(vendor_name).tap { |v| mkdir_p v unless File.directory?(v) }
     files = DOWNLOADS[vendor_name]
     files.each do |name, info|
       version = info["version"]
       url = "http://logstash.objects.dreamhost.com/maxmind/#{name}-#{version}.dat.gz"
       download = file_fetch(url, info["sha1"])
-      file vendor(vendor_name, File.basename(download)) do |task, args|
-        cp download, task.name
-      end.invoke
+      outpath = vendor(vendor_name, "#{name}.dat")
+      tgz = Zlib::GzipReader.new(File.open(download))
+      begin
+        File.open(outpath, "w") do |out|
+          IO::copy_stream(tgz, out)
+        end
+      rescue
+        File.unlink(outpath) if File.file?(outpath)
+        raise
+      end
+      tgz.close
     end
   end
   task "all" => "geoip"

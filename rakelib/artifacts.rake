@@ -9,6 +9,7 @@ namespace "artifact" do
     "CHANGELOG",
     "CONTRIBUTORS",
     "{bin,lib,spec,locales}/{,**/*}",
+    "patterns/**/*",
     "vendor/elasticsearch/**/*",
     "vendor/collectd/**/*",
     "vendor/jruby/**/*",
