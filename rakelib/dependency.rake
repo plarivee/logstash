@@ -23,4 +23,8 @@ namespace "dependency" do
   task "stud" do
     Rake::Task["gem:require"].invoke("stud", ">= 0", ENV["GEM_HOME"])
   end # task stud
+
+  task "fpm" do
+    Rake::Task["gem:require"].invoke("fpm", ">= 0", ENV["GEM_HOME"])
+  end # task stud
 end # namespace dependency

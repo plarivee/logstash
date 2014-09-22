@@ -42,10 +42,31 @@ namespace "artifact" do
 
   desc "Build an RPM of logstash with all dependencies"
   task "rpm" do
+    Rake::Task["dependency:fpm"].invoke
+    require "fpm/package/dir"
+    require "fpm/package/rpm"
+
+    input = FPM::Package::Dir.new
+
+    package_files.each do |path|
+      package.input("#{path}=/opt/logstash/#{path}")
+    end
+
+    # Do any platform-specific stuff
+
+    # Convert it to an rpm
+    package = package.convert(FPM::Package::RPM)
+    begin
+      output = "NAME-VERSION.ARCH.rpm"
+      package.output(rpm.to_s(output))
+    ensure
+      rpm.cleanup
+    end
   end
 
   desc "Build an RPM of logstash with all dependencies"
   task "deb" do
+    Rake::Task["dependency:fpm"].invoke
   end
 end
 
